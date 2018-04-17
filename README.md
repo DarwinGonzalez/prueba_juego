@@ -1,1 +1,2 @@
-# prueba_juego
+# Prueba juego
+Prueba de juego en HTML utilizando librerías de Phaser - HTML5 Game Framework
