@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.3/phaser.min.js"></script>
+    </head>
+    <body>
+        <h1>Prueba juego Phaser</h1>
+        <h3>Utilice las teclas de direcciones para mover al alien</h3>
+    
+        <script>
+            var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-demo', { preload: preload, create: create, update: update});
+            
+            var player, particles, cursors, textureRegistry = {};
+            
+            function preload() {
+                
+                game.load.image('alien', './obstaculo_3.png');
+                game.load.image('moon', './obstaculo_0.png');
+                game.load.image('saturn', './obstaculo_0.png');
+            }
+            
+            function create() {
+              game.physics.startSystem(Phaser.Physics.ARCADE);
+              player = game.add.sprite(game.width/2, game.height/2,'alien');
+              player.anchor.setTo(0.5, 0.5);
+              game.physics.arcade.enableBody(player);
+              player.body.collideWorldBounds = true;
+              
+              particles = game.add.group();
+              particles.physicsBodyType = Phaser.Physics.ARCADE;
+              particles.enableBody = true;for(var i = 0; i < 300; i++) {
+                  if(randomNumber == 1) {
+                      particles.add(game.add.sprite(game.world.randomX, game.world.randomY, 'moon'));
+                  }
+                  else {
+                      particles.add(game.add.sprite(game.world.randomX, game.world.randomY, 'saturn'));
+                  }
+                  
+                
+              }
+              
+              particles.setAll('body.mass', 0.5);
+              particles.setAll('body.collideWorldBounds', true);
+              particles.setAll('body.bounce', new Phaser.Point(0.5,0.5));
+              
+              cursors = game.input.keyboard.createCursorKeys();
+            
+            }
+            
+            function update() {
+              player.body.velocity.y = 0;
+              player.body.velocity.x = 0
+              if(cursors.up.isDown) {
+                player.body.velocity.y = -100;
+              }
+              if(cursors.down.isDown) {
+                player.body.velocity.y = 100;
+              }
+              if(cursors.left.isDown) {
+                player.body.velocity.x = -100;
+              }
+              if(cursors.right.isDown) {
+                player.body.velocity.x = 100;
+              }
+              game.physics.arcade.collide(player, particles);
+              game.physics.arcade.collide(particles);
+              
+            }
+            
+            function createBlock(size, color) {
+              var name = size + '_' + color;
+              if(textureRegistry[name]) {
+                return textureRegistry[name];
+              }
+            
+              var bmd = game.add.bitmapData(size, size);
+              bmd.ctx.fillStyle = color;
+              bmd.ctx.fillRect(0,0, size, size);
+              textureRegistry[name] = bmd;
+              return bmd;
+            }
+            
+            function randomNumber() {
+                return Math.round(Math.random() * (1 - 0) + 1);
+            }  
+        </script>
+    
+    </body>
+</html>
